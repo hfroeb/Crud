@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<form action="/editEvent" method="post">
+    <input type = "text" placeholder="Event Title" name = "editTitle"/>
+    <input type = "text" placeholder="Location" name = "editLocation"/>
+    <input type = "text" placeholder="Time and Date" name="editTimeAndDate"/>
+    <select name="editType">
+        <option selected disabled>Event Type</option>
+        <option value = "concert">Concert</option>
+        <option value = "art show">Art Show</option>
+        <option value = "festival">Festival</option>
+        <option value="film screening">Film Screening</option>
+        <option value="sports, games, or tournaments">Sports, Games, or Tournaments</option>
+        <option value="discounts">Discounts, Deals, and Specials</option>
+        <option value="other">Other</option>
+    </select>
+    <input type="text" placeholder="Short Description" name="editDescription" size="30"/>
+    <input type="hidden" value="{{userName}}" name="editAuthor"/>
+    <input type="hidden" value="{{index}}" name="editIndex"/>
+    <input type="hidden" value="{{viewable}}" name="editViewable"/>
+    <button type="submit">Update Event</button>
+</form>
+
+</body>
+</html>
