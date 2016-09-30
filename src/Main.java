@@ -33,10 +33,12 @@ public class Main {
                             event.viewable = null;
                         }
                     }
-                    for (Event event: events){
-                        event.index = 0;
-                        for (int i = 0; i < events.size(); i++) {
-                            event.index = i;
+                    for (Event event: events) {
+                        if (event.index < 0) { // event is new, was just created
+                            event.index = 0;
+                            for (int i = 0; i < events.size(); i++) {
+                                event.index = (i);
+                            }
                         }
                     }
                     if (user == null) {
@@ -110,9 +112,8 @@ public class Main {
                     String eventType = request.queryParams("eventType");
                     String description = request.queryParams("description");
                     String author = request.queryParams("author");
-                    int index = -1;
+                    int index = -1; //indicates new event
                     String viewable = null;
-
 
                     Event m = new Event(index, title, location, timeAndDate, eventType, description, author, viewable);
                     events.add(m);
@@ -125,7 +126,7 @@ public class Main {
         Spark.post("/delete-event",
                 ((request, response) -> {
                     int index = Integer.parseInt(request.queryParams("index"));
-                    events.remove(index-1);
+                    events.remove(index);
                     response.redirect("/");
                     return "";
                 }));

@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
+{{#event}}
+Edit this event:
+<br>
+<h2>{{title}}</h2>
+<br>
+Location:{{location}}
+<br>
+Time and Date:{{timeAndDate}}
+<br>
+Event Type: {{eventType}}
+<br>
+Description: {{description}}
+{{/event}}
 
 <form action="/editEvent" method="post">
     <input type = "text" placeholder="Event Title" name = "editTitle"/>
