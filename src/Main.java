@@ -21,17 +21,19 @@ public class Main {
         Spark.get("/",
                 ((request, response) -> {
                     HashMap m = new HashMap<>();
-
                     Session session = request.session();
                     String userName = session.attribute("userName");
+                    String userName1 = session.attribute("userName1");
                     User user = users.get(userName);
 
                     for (Event event : events) {
-                        if (event.author.equalsIgnoreCase(userName)) {
+                        if (event.author.equalsIgnoreCase(userName) || event.author.equalsIgnoreCase(userName1)) {
                             event.viewable = "yes";
                         } else {
                             event.viewable = null;
                         }
+                    }
+                    for (Event event: events){
                         event.index = 0;
                         for (int i = 0; i < events.size(); i++) {
                             event.index = i;
@@ -42,10 +44,7 @@ public class Main {
                         return new ModelAndView(m, "home.html");
 
                     } else {
-                       // ArrayList<Object> viewList = loadViewList(events, userName);
-                        // would not work with create event
                         m.put("events", events);
-                     //   m.put("viewList", viewList);
                         m.put("userName", userName);
                         return new ModelAndView(m, "home.html");
                     }
@@ -53,16 +52,17 @@ public class Main {
                 new MustacheTemplateEngine()
         );
         Spark.get(
-                "/editEvent", // page
-                ((request, response) -> {
+                "/editEvent", // edit event page
+                (request, response) -> {
                     HashMap m = new HashMap();
                     Session session = request.session();
                     int index = session.attribute("editIndex");
                     Event event = events.get(index);
-                    m.put("event", event);
-                    m.put("index", index);
-                    return new ModelAndView(m, "editEvent.html");
-                }),
+                        m.put("event", event);
+                        m.put("index", index);
+                        return new ModelAndView(m, "editEvent.html");
+
+                },
                 new MustacheTemplateEngine()
         );
 
@@ -124,13 +124,12 @@ public class Main {
 
         Spark.post("/delete-event",
                 ((request, response) -> {
-                    //   Session session = request.session();
                     int index = Integer.parseInt(request.queryParams("index"));
-                    events.remove(index);
+                    events.remove(index-1);
                     response.redirect("/");
                     return "";
                 }));
-        Spark.post( //button to go to edit page
+        Spark.post( //Post to home page to get to edit page (button)
                 "/edit-event",
                 ((request, response) -> {
                     int editIndex = Integer.parseInt(request.queryParams("editIndex"));
@@ -140,7 +139,7 @@ public class Main {
                     return "";
                 }));
         Spark.post(
-                "/editEvent", // edit page
+                "/editEvent", // Post to edit event page
                 ((request, response) -> {
                     Session session = request.session();
                     int editIndex = session.attribute("editIndex");
@@ -153,6 +152,9 @@ public class Main {
                     String description = request.queryParams("editDescription");
                     String author = request.queryParams("editAuthor");
                     String viewable = "yes";
+                    String userName1 = request.queryParams("editAuthor");
+
+                    session.attribute("userName1", userName1);
 
                     Event m = new Event(editIndex, title, location, timeAndDate, eventType, description, author, viewable);
                     events.add(m);
@@ -163,29 +165,3 @@ public class Main {
     }
 }
 
-//   static ArrayList<Object> loadViewList(ArrayList<Event>events, String userName) {
-//        ArrayList<Object> viewList = new ArrayList<>();
-//        for (Event event : events) {
-//            Object o = new Object() {
-//                String title;
-//                String location;
-//                String timeAndDate;
-//                String eventType;
-//                String description;
-//                String author;
-//
-//                String viewable;
-//
-//                {
-//                    if (event.author.equalsIgnoreCase(userName)) {
-//                        viewable = "yes";
-//                    } else {
-//                        viewable = null;
-//                    }
-//                }
-//            };
-//            viewList.add(o);
-//        }
-//        return viewList;
-//    }
-//}
